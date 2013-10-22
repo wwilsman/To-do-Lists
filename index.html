@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>To Do</title>
+
+  <style>
+    /* Eric Meyer's Reset CSS v2.0 - http://cssreset.com */
+    html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:none}table{border-collapse:collapse;border-spacing:0}
+
+    html { background-color: #888; height: 100%; }
+    body { height: 100%; font: 20px/1.5em serif; overflow: hidden; }
+    h1 { font-size: 30px; line-height: 1em; text-align: center; }
+    h2 { font-size: 20px; line-height: 1em; }
+    textarea { height: 1.5em; width: 100%; font: inherit; border: 1px solid #ddd; padding: 0; resize: none; overflow: hidden; }
+    textarea:focus { outline: none; }
+    a { text-decoration: none; }
+
+    .main-wrapper { overflow-y: hidden; overflow-x: scroll; position: absolute; top: 0; right: 0; bottom: -15px; left: 0; }
+    .main-container { height: 100%; width: 1380px; padding: 0 20px; position: relative; top: 0; left: 50%; margin-left: -250px; }
+    .main-container:after { content: ''; display: table; clear: both; }
+
+    .list-wrapper { height: 100%; width: 460px; overflow: hidden; float: left; }
+    .list-container { height: 100%; width: 100%; overflow-y: scroll; overflow-x: hidden; }
+
+    .list { background-color: #fff; border-radius: 10px; width: 420px; margin: 70px auto; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
+
+    .list-header { position: relative; padding: 20px 80px; background-color: #0cf; border-radius: 10px 10px 0 0; border-bottom: 1px solid rgba(0,0,0,0.1); color: #fff; }
+
+    .list-item { border-bottom: 1px solid #ddd; position: relative; overflow: hidden; }
+    .list-item h2 { padding: 0 25px 0 70px; margin: 1em 0; line-height: 1.5em; }
+    .checkbox { position: absolute; top: 0; left: 0; width: 1em; height: 1em; padding: 25px; }
+    .checkbox:before { content: ''; box-sizing: border-box; display: block; width: 20px; height: 20px; border: 1px solid #ddd; }
+    .checked:after { content: ''; position: absolute; top: 50%; left: 50%; margin: -12px 0 0 -12px; height: 12px; width: 25px; border: solid #0c0; border-width: 0 0 2px 2px; -webkit-transform: rotate(-45deg); }
+
+    .list-input { padding: 20px; padding-left: 70px; }
+    .list-input textarea { display: block; border: none; }
+  </style>
+
+</head>
+<body>
+
+<div class="main-wrapper">
+  <div class="main-container">
+
+    <div class="list-wrapper">
+      <div class="list-container">
+        <ul class="list">
+          <li class="list-header" style="background-color:#0C0"><h1>Finishing This App</h1><a href="#" class="edit-list-items"></a></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Add icons</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Add description box</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Add effects (hover and carousel)</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Create 'Edit Mode'</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Create 'Edit Mode' functions (see&nbsp;below)</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>- 'Delete Item/List' function</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>- 'Arrange Item/List' function</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Create JSON file containing all information for all lists</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Impliment file editing/creating</h2></li>
+          <li class="list-input"><textarea placeholder="Add Item"></textarea></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="list-wrapper">
+      <div class="list-container">
+        <ul class="list">
+          <li class="list-header"><h1>Title</h1><a href="#" class="edit-list-items"></a></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Rem voluptatem.</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Recusandae pariatur!</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Fugiat aliquid?</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Natus blanditiis?</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Aperiam tenetur.</h2></li>
+          <li class="list-input"><textarea placeholder="Add Item"></textarea></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="list-wrapper">
+      <div class="list-container">
+        <ul class="list">
+          <li class="list-header"><h1>Title</h1><a href="#" class="edit-list-items"></a></li>
+          <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Lorem ipsum.</h2></li>
+          <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Ad obcaecati.</h2></li>
+          <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Iure nihil!</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Consequuntur culpa.</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Rem voluptatem.</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Aperiam tenetur.</h2></li>
+          <li class="list-input"><textarea placeholder="Add Item"></textarea></li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  function forEach(a,b){for(var i=0;i<a.length;i++)b(i,a[i])}
+  function makeElem(a){var b=document.createElement('div');return b.innerHTML=a,b.firstChild}
+  function hasClass(a,b){var c=new RegExp("(^|\\s+)"+b+"(\\s+|$)");return c.test(a.className)}
+  function addClass(a,b){hasClass(a,b)||(a.className=a.className+" "+b)}
+  function removeClass(a,b){var c=new RegExp("(^|\\s+)"+b+"(\\s+|$)");a.className=a.className.replace(c,"")}
+  function toggleClass(a,b){var c=hasClass(a,b)?removeClass:addClass;c(a,b)}
+  function get_scrollbar_size(){var b,a=document.createElement("div"),c=document.body;return a.style.overflow="scroll",a.style.position="absolute",c.appendChild(a),b=a.offsetWidth,c.removeChild(a),b}
+
+  (function(){
+    var list_containers = document.querySelectorAll('.list-container'),
+      checkboxes = document.querySelectorAll('.checkbox'),
+      list_inputs = document.querySelectorAll('.list-input textarea'),
+      get_list = function(e){return hasClass(e,'list-wrapper')?e:get_list(e.parentNode)},
+      check_toggle = function(e){e.preventDefault(),toggleClass(this,'checked')};
+
+    document.querySelector('.main-wrapper').style.bottom = '-' + get_scrollbar_size() + 'px';
+    forEach(list_containers, function (i, list_container) {
+      var scrollbar_size_half = Math.ceil(get_scrollbar_size()/2);
+      list_container.style.padding = '0 ' + scrollbar_size_half + 'px';
+    });
+    forEach(checkboxes, function (i, checkbox) { checkbox.addEventListener('click', check_toggle) });
+    forEach(list_inputs, function (i, list_input) {
+      list_input.addEventListener('keydown', function (event) {
+        var item_tmpl = '<li class="list-item"><a href="#" class="checkbox"></a><h2>{{title}}</h2></li>',
+          inner_list = get_list(this).querySelector('.list'), new_item;
+        if (event.which === 13) {
+          event.preventDefault();
+          if (this.value.trim().length) {
+            new_item = makeElem(item_tmpl.replace('{{title}}', this.value.trim()));
+            new_item.querySelector('.checkbox').addEventListener('click', check_toggle);
+            inner_list.insertBefore(new_item, this.parentNode);
+            this.value = '';
+          }
+        }
+      })
+    })
+  }())
+</script>
+
+</body>
+</html>
