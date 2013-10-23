@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>To Do</title>
+  <link rel="stylesheet" href="fonts/style.css">
 
   <style>
     /* Eric Meyer's Reset CSS v2.0 - http://cssreset.com */
@@ -12,29 +13,57 @@
     body { height: 100%; font: 20px/1.5em serif; overflow: hidden; }
     h1 { font-size: 30px; line-height: 1em; text-align: center; }
     h2 { font-size: 20px; line-height: 1em; }
-    textarea { height: 1.5em; width: 100%; font: inherit; border: 1px solid #ddd; padding: 0; resize: none; overflow: hidden; }
+    textarea { width: 100%; font: inherit; border: 1px solid #ddd; padding: 0; resize: none; overflow: hidden; }
     textarea:focus { outline: none; }
-    a { text-decoration: none; }
+    a { text-decoration: none; color: inherit; }
 
     .main-wrapper { overflow-y: hidden; overflow-x: scroll; position: absolute; top: 0; right: 0; bottom: -15px; left: 0; }
     .main-container { height: 100%; width: 1380px; padding: 0 20px; position: relative; top: 0; left: 50%; margin-left: -250px; }
     .main-container:after { content: ''; display: table; clear: both; }
 
-    .list-wrapper { height: 100%; width: 460px; overflow: hidden; float: left; }
+    .list-wrapper { height: 100%; width: 460px; overflow: hidden; float: left; position: relative; }
     .list-container { height: 100%; width: 100%; overflow-y: scroll; overflow-x: hidden; }
 
     .list { background-color: #fff; border-radius: 10px; width: 420px; margin: 70px auto; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
 
-    .list-header { position: relative; padding: 20px 80px; background-color: #0cf; border-radius: 10px 10px 0 0; border-bottom: 1px solid rgba(0,0,0,0.1); color: #fff; }
+    .list-header { z-index: 10; position: relative; padding: 20px 80px; background-color: #0cf; border-radius: 10px 10px 0 0; border-bottom: 1px solid rgba(0,0,0,0.1); color: #fff; }
+    .edit-list, .delete-list { position: absolute; bottom: 0; right: 0; padding: 30px 25px 20px; line-height: 1em; transition: text-shadow 0.2s; }
+    .delete-list { box-sizing: border-box; padding: 0; right: auto; left: 0; opacity: 0; width: 0; overflow: hidden; transition: padding 0s 0.2s, width 0s 0.2s, opacity 0.2s; }
 
-    .list-item { border-bottom: 1px solid #ddd; position: relative; overflow: hidden; }
-    .list-item h2 { padding: 0 25px 0 70px; margin: 1em 0; line-height: 1.5em; }
-    .checkbox { position: absolute; top: 0; left: 0; width: 1em; height: 1em; padding: 25px; }
-    .checkbox:before { content: ''; box-sizing: border-box; display: block; width: 20px; height: 20px; border: 1px solid #ddd; }
-    .checked:after { content: ''; position: absolute; top: 50%; left: 50%; margin: -12px 0 0 -12px; height: 12px; width: 25px; border: solid #0c0; border-width: 0 0 2px 2px; -webkit-transform: rotate(-45deg); }
+    .editing .edit-list, .delete-list:hover { text-shadow: 0 0 5px #fff; }
+    .editing .delete-list, .editing .edit-item, .open .edit-item { opacity: 1; width: 70px; transition: width 0s 0s, opacity 0.2s; }
+    .editing .delete-list { padding: 30px 25px 20px; }
 
-    .list-input { padding: 20px; padding-left: 70px; }
-    .list-input textarea { display: block; border: none; }
+    .list-item { border: solid #ddd; border-width: 1px 0; margin-top: -1px; position: relative; overflow: hidden; background-color: #fff; }
+    .list-item h2 { position: relative; z-index: 1; }
+    .list-item h2, .descr { padding: 20px 70px; line-height: 1.5em; cursor: pointer; width: 100%; box-sizing: border-box; }
+    .descr { position: absolute; padding-top: 0; font: 14px/1.5em sans-serif; color: #888; cursor: default; }
+    .descr p { cursor: text; display: block; padding: 5px; margin: -5px; margin-right: 0; }
+    .descr p:focus { outline: none; box-shadow: 0 0 0 1px #ddd; }
+    .descr p:empty:after { content: 'Click to add notes'; color: #ddd; }
+    .checkbox { z-index: 2; position: absolute; top: 0; left: 0; width: 1em; height: 1em; padding: 25px; color: #0c0; }
+    .checkbox:before { position: absolute; top: 50%; left: 50%; margin: -10px 0 0 -10px; }
+    .checkbox:after { content: ""; box-sizing: border-box; display: block; width: 20px; height: 20px; border: 1px solid #ddd; }
+    .edit-item { z-index: 2; position: absolute; bottom: 0; right: 0; opacity: 0; min-height: 210px; height: 100%; overflow: hidden; transition: width 0s 0.2s, opacity 0.2s; }
+    .edit-item a { position: absolute; right: 0; padding: 25px; width: 20px; height: 20px; color: #ddd; }
+    .delete-item { top: auto; bottom: 0; }
+    .delete-item:hover { color: #f00; }
+    .move-item-down { top: 70px; }
+    .move-item-up { top: 0; }
+    .move-item-down:hover, .move-item-up:hover { color: #aaa; }
+
+    .list-input { padding: 20px; padding-left: 70px; position: relative; }
+    .list-input textarea { display: block; border: none; height: 1.5em; }
+    .list-input textarea::-webkit-input-placeholder { color: #ddd; }
+    .add-item { cursor: pointer; position: absolute; top: 0; left: 0; padding: 25px; color: #ddd; }
+
+    .edit-list, .checked, .move-item-up, .move-item-down, .delete-item, .delete-list, .add-item { font-family: 'icomoon'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    .checked:before { content: "\e600"; }
+    .delete-item:before, .delete-list:before { content: "\e601"; }
+    .edit-list:before { content: "\e602"; }
+    .add-item:before { content: "\e603"; }
+    .move-item-up:before { content: "\e604"; }
+    .move-item-down:before { content: "\e605"; }
   </style>
 
 </head>
@@ -46,14 +75,17 @@
     <div class="list-wrapper">
       <div class="list-container">
         <ul class="list">
-          <li class="list-header" style="background-color:#0C0"><h1>Finishing This App</h1><a href="#" class="edit-list-items"></a></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>Add icons</h2></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>Add description box</h2></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>Add effects (hover and carousel)</h2></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>Create 'Edit Mode'</h2></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>Create 'Edit Mode' functions (see&nbsp;below)</h2></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>- 'Delete Item/List' function</h2></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>- 'Arrange Item/List' function</h2></li>
+          <li class="list-header" style="background-color:#0C0"><h1>Finishing This App</h1><a href="#" class="edit-list"></a><a href="#" class="delete-list"></a></li>
+          <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Add icons</h2></li>
+          <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Add description box</h2></li>
+          <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Create 'Edit Mode'</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Add list settings</h2></li>
+          <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Add hover effects</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>Add carousel effect</h2></li>
+          <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Create 'Edit Mode' functions (see&nbsp;below)</h2></li>
+          <li class="list-item"><a href="#" class="checkbox checked"></a><h2>- 'Delete Item/List' function</h2></li>
+          <li class="list-item"><a href="#" class="checkbox checked"></a><h2>- 'Arrange Item/List' function</h2></li>
+          <li class="list-item"><a href="#" class="checkbox"></a><h2>- Consider sub-lists</h2></li>
           <li class="list-item"><a href="#" class="checkbox"></a><h2>Create JSON file containing all information for all lists</h2></li>
           <li class="list-item"><a href="#" class="checkbox"></a><h2>Impliment file editing/creating</h2></li>
           <li class="list-input"><textarea placeholder="Add Item"></textarea></li>
@@ -64,13 +96,57 @@
     <div class="list-wrapper">
       <div class="list-container">
         <ul class="list">
-          <li class="list-header"><h1>Title</h1><a href="#" class="edit-list-items"></a></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>Rem voluptatem.</h2></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>Recusandae pariatur!</h2></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>Fugiat aliquid?</h2></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>Natus blanditiis?</h2></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>Aperiam tenetur.</h2></li>
-          <li class="list-input"><textarea placeholder="Add Item"></textarea></li>
+          <li class="list-header">
+            <h1>Title</h1>
+            <a href="#" class="delete-list" title="Delete list"></a>
+            <a href="#" class="edit-list" title="Edit list"></a>
+          </li>
+
+          <li class="list-item">
+            <h2 class="item-title">Optio, cupiditate.</h2>
+            <div class="descr"><p contenteditable="true" title="Click to edit">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, molestias, assumenda, iusto error blanditiis autem sit nesciunt numquam quidem voluptates dicta fuga ipsam temporibus libero natus?</p></div>
+            <a href="#" class="checkbox" title="Mark/Unmark"></a>
+            <div class="edit-item">
+              <a href="#" class="move-item-up" title="Move item up"></a>
+              <a href="#" class="move-item-down" title="Move item down"></a>
+              <a href="#" class="delete-item" title="Delete item"></a>
+            </div>
+          </li>
+          <li class="list-item">
+            <h2 class="item-title">Lorem ipsum dolor sit amet, Aliq.</h2>
+            <div class="descr"><p contenteditable="true" title="Click to edit"></p></div>
+            <a href="#" class="checkbox" title="Mark/Unmark"></a>
+            <div class="edit-item">
+              <a href="#" class="move-item-up" title="Move item up"></a>
+              <a href="#" class="move-item-down" title="Move item down"></a>
+              <a href="#" class="delete-item" title="Delete item"></a>
+            </div>
+          </li>
+          <li class="list-item">
+            <h2 class="item-title">Provident, aspernatur.</h2>
+            <div class="descr"><p contenteditable="true" title="Click to edit"></p></div>
+            <a href="#" class="checkbox" title="Mark/Unmark"></a>
+            <div class="edit-item">
+              <a href="#" class="move-item-up" title="Move item up"></a>
+              <a href="#" class="move-item-down" title="Move item down"></a>
+              <a href="#" class="delete-item" title="Delete item"></a>
+            </div>
+          </li>
+          <li class="list-item">
+            <h2 class="item-title">Rem, minima.</h2>
+            <div class="descr"><p contenteditable="true" title="Click to edit"></p></div>
+            <a href="#" class="checkbox" title="Mark/Unmark"></a>
+            <div class="edit-item">
+              <a href="#" class="move-item-up" title="Move item up"></a>
+              <a href="#" class="move-item-down" title="Move item down"></a>
+              <a href="#" class="delete-item" title="Delete item"></a>
+            </div>
+          </li>
+
+          <li class="list-input">
+            <div class="add-item"></div>
+            <textarea placeholder="Add Item"></textarea>
+          </li>
         </ul>
       </div>
     </div>
@@ -78,14 +154,15 @@
     <div class="list-wrapper">
       <div class="list-container">
         <ul class="list">
-          <li class="list-header"><h1>Title</h1><a href="#" class="edit-list-items"></a></li>
-          <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Lorem ipsum.</h2></li>
-          <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Ad obcaecati.</h2></li>
-          <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Iure nihil!</h2></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>Consequuntur culpa.</h2></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>Rem voluptatem.</h2></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>Aperiam tenetur.</h2></li>
-          <li class="list-input"><textarea placeholder="Add Item"></textarea></li>
+          <li class="list-header">
+            <h1>Title</h1>
+            <a href="#" class="delete-list"></a>
+            <a href="#" class="edit-list"></a>
+          </li>
+          <li class="list-input">
+            <div class="add-item"></div>
+            <textarea placeholder="Add Item"></textarea>
+          </li>
         </ul>
       </div>
     </div>
@@ -97,39 +174,121 @@
   function forEach(a,b){for(var i=0;i<a.length;i++)b(i,a[i])}
   function makeElem(a){var b=document.createElement('div');return b.innerHTML=a,b.firstChild}
   function hasClass(a,b){var c=new RegExp("(^|\\s+)"+b+"(\\s+|$)");return c.test(a.className)}
-  function addClass(a,b){hasClass(a,b)||(a.className=a.className+" "+b)}
-  function removeClass(a,b){var c=new RegExp("(^|\\s+)"+b+"(\\s+|$)");a.className=a.className.replace(c,"")}
-  function toggleClass(a,b){var c=hasClass(a,b)?removeClass:addClass;c(a,b)}
+  function addClass(a,b){hasClass(a,b)||(a.className=a.className+" "+b);return a}
+  function removeClass(a,b){var c=new RegExp("(^|\\s+)"+b+"(\\s+|$)");a.className=a.className.replace(c,"");return a}
+  function toggleClass(a,b){var c=hasClass(a,b)?removeClass:addClass;c(a,b);return a}
   function get_scrollbar_size(){var b,a=document.createElement("div"),c=document.body;return a.style.overflow="scroll",a.style.position="absolute",c.appendChild(a),b=a.offsetWidth,c.removeChild(a),b}
 
   (function(){
-    var list_containers = document.querySelectorAll('.list-container'),
-      checkboxes = document.querySelectorAll('.checkbox'),
-      list_inputs = document.querySelectorAll('.list-input textarea'),
+    var lists = document.querySelectorAll('.list-wrapper'),
+      item_tmpl = [
+        '<li class="list-item">',
+          '<h2 class="item-title">{{title}}</h2>',
+          '<div class="descr"><p contenteditable="true" title="Click to edit">{{notes}}</p></div>',
+          '<a href="#" class="checkbox" title="Mark/Unmark"></a>',
+          '<div class="edit-item">',
+            '<a href="#" class="move-item-up" title="Move item up"></a>',
+            '<a href="#" class="move-item-down" title="Move item down"></a>',
+            '<a href="#" class="delete-item" title="Delete item"></a>',
+          '</div>',
+        '</li>'].join(''),
       get_list = function(e){return hasClass(e,'list-wrapper')?e:get_list(e.parentNode)},
-      check_toggle = function(e){e.preventDefault(),toggleClass(this,'checked')};
-
-    document.querySelector('.main-wrapper').style.bottom = '-' + get_scrollbar_size() + 'px';
-    forEach(list_containers, function (i, list_container) {
-      var scrollbar_size_half = Math.ceil(get_scrollbar_size()/2);
-      list_container.style.padding = '0 ' + scrollbar_size_half + 'px';
-    });
-    forEach(checkboxes, function (i, checkbox) { checkbox.addEventListener('click', check_toggle) });
-    forEach(list_inputs, function (i, list_input) {
-      list_input.addEventListener('keydown', function (event) {
-        var item_tmpl = '<li class="list-item"><a href="#" class="checkbox"></a><h2>{{title}}</h2></li>',
-          inner_list = get_list(this).querySelector('.list'), new_item;
-        if (event.which === 13) {
-          event.preventDefault();
+      get_item = function(e){return hasClass(e,'list-item')?e:get_item(e.parentNode)},
+      edit_toggle = function(e){e.preventDefault(),toggleClass(get_list(this),'editing')},
+      descr_toggle = function () {
+        var item = toggleClass(this.parentNode, 'open'),
+          item_descr = item.querySelector('.descr'),
+          item_height = this.offsetHeight + item_descr.offsetHeight;
+        item.style.height = item.offsetHeight + 'px';
+        item.offsetHeight // force repaint
+        item.style.transition = 'height 200ms';
+        if (hasClass(item, 'open')) {
+          item.style.height = Math.max(item_height, 210) + 'px';
+          setTimeout(function () { 
+            item.style.minHeight = '210px';
+            item_descr.style.position = 'static' 
+          }, 200);
+        } else { 
+          item.style.minHeight = '';
+          item_descr.style.position = 'absolute';
+          item.style.height = this.offsetHeight + 'px';
+        }
+        setTimeout(function () { 
+          item.style.transition = '';
+          item.style.height = '';
+        }, 200);
+      },
+      add_item = function (e) {
+        var new_item, new_item_html;
+        if (e.which === 13) {
+          e.preventDefault();
           if (this.value.trim().length) {
-            new_item = makeElem(item_tmpl.replace('{{title}}', this.value.trim()));
-            new_item.querySelector('.checkbox').addEventListener('click', check_toggle);
-            inner_list.insertBefore(new_item, this.parentNode);
+            new_item_html = item_tmpl.replace('{{title}}', this.value.trim());
+            new_item_html = new_item_html.replace('{{notes}}', '');
+            new_item = makeElem(new_item_html);
+            get_list(this).querySelector('.list').insertBefore(new_item, this.parentNode);
             this.value = '';
           }
         }
-      })
+      },
+      delete_item = function () {
+        var item = get_item(this);
+        item.style.height = item.offsetHeight + 'px';
+        item.style.minHeight = '';
+        item.offsetHeight // force repaint
+        item.style.transition = 'height 200ms';
+        item.style.height = '0px';
+        setTimeout(function () { item.parentNode.removeChild(item) }, 200);
+      },
+      delete_list = function () {
+        var list = get_list(this);
+        list.style.transition = 'opacity 200ms, top 200ms, width 300ms 200ms';
+        list.style.top = '-500px';
+        list.style.width = '0px';
+        list.style.opacity = 0;
+        setTimeout(function () { list.parentNode.removeChild(list) }, 500);
+      },
+      move_item = function (d) {
+        var item = get_item(this), u = d=='up',
+          x_item = u?item.previousElementSibling:item.nextElementSibling,
+          item_height, x_item_height;
+        if (!hasClass(x_item,'list-item')) return false;
+        item_height = item.offsetHeight,
+        x_item_height = x_item.offsetHeight;
+        console.log(x_item_height);
+        item.style.transition = 'top 200ms';
+        x_item.style.transition = 'top 200ms';
+        item.style.top = (u?'-':'') + x_item_height + 'px';
+        x_item.style.top = (u?'':'-') + item_height + 'px';
+        setTimeout(function () {
+          item.parentNode.insertBefore(u?item:x_item, u?x_item:item);
+          x_item.style.transition = '';
+          item.style.transition = '';
+          x_item.style.top = '';
+          item.style.top = '';
+        }, 200)
+      },
+      deligatedEvents = function (e) {
+        var t = e.target,
+          callEvent = function(a,b){e.preventDefault(),a.call(e.target,b)};
+        if (hasClass(t,'checkbox')) toggleClass(e.target,'checked');
+        else if (hasClass(t,'delete-item')) callEvent(delete_item);
+        else if (hasClass(t,'item-title')) callEvent(descr_toggle);
+        else if (hasClass(t,'move-item-up')) callEvent(move_item,'up');
+        else if (hasClass(t,'move-item-down')) callEvent(move_item,'down');
+        else if (hasClass(t,'add-item')) t.parentNode.querySelector('textarea').focus();
+      };
+
+    document.querySelector('.main-wrapper').style.bottom = '-' + get_scrollbar_size() + 'px';
+
+    forEach(lists, function (i, list) {
+      list.querySelector('.list-container').style.padding = '0 ' + Math.ceil(get_scrollbar_size()/2) + 'px';
+      list.querySelector('.list-input textarea').addEventListener('keydown', add_item);
+      list.querySelector('.delete-list').addEventListener('click', delete_list);
+      list.querySelector('.edit-list').addEventListener('click', edit_toggle);
+      list.addEventListener('click', deligatedEvents);
     })
+
   }())
 </script>
 
