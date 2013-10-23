@@ -26,15 +26,31 @@
 
     .list { background-color: #fff; border-radius: 10px; width: 420px; margin: 70px auto; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
 
-    .list-header { z-index: 10; position: relative; padding: 20px 80px; background-color: #0cf; border-radius: 10px 10px 0 0; border-bottom: 1px solid rgba(0,0,0,0.1); color: #fff; }
-    .edit-list, .delete-list { position: absolute; bottom: 0; right: 0; padding: 30px 25px 20px; line-height: 1em; transition: text-shadow 0.2s; }
+    .list-header { z-index: 10; position: relative; padding: 20px 80px; border-radius: 10px 10px 0 0; border-bottom: 1px solid rgba(0,0,0,0.1); color: #fff; transition: color 0.2s, background-color 0.2s; }
+    .list-header h1 { box-sizing: border-box; transition: all 0.2s; border-radius: 10px; border: 1px solid transparent; margin: -6px; line-height: 40px; white-space: nowrap; }
+    .list-header h1[contenteditable='true'] { background-color: #fff; color: #000; box-shadow: 0 0 5px rgba(0,0,0,0.1) inset; border-color: #ccc; }
+    .list-header h1[contenteditable='true']:focus { outline: none; }
+    .list-header h1[contenteditable='false']:empty:before { content: "\A0"; }
+    .edit-list, .delete-list { position: absolute; bottom: 0; right: 0; padding: 30px 25px 20px; line-height: 1em; opacity: 0.6; transition: opacity 0.2s; }
     .delete-list { box-sizing: border-box; padding: 0; right: auto; left: 0; opacity: 0; width: 0; overflow: hidden; transition: padding 0s 0.2s, width 0s 0.2s, opacity 0.2s; }
 
-    .editing .edit-list, .delete-list:hover { text-shadow: 0 0 5px #fff; }
-    .editing .delete-list, .editing .edit-item, .open .edit-item { opacity: 1; width: 70px; transition: width 0s 0s, opacity 0.2s; }
-    .editing .delete-list { padding: 30px 25px 20px; }
+    .list-settings { padding: 0; overflow: hidden; background-color: #f0f0f0; font: 14px/30px sans-serif; color: #ccc; height: 0; transition: padding 0.2s, height 0.2s; }
+    .list-settings:before { float: left; display: block; font-size: 20px; width: 1em; height: 1em; padding: 5px 25px; }
+    .list-settings textarea { box-sizing: border-box; border-radius: 10px; padding: 5px 10px; height: 30px; line-height: 20px; text-align: center; width: auto; box-shadow: 0 0 5px rgba(0,0,0,0.1) inset; border: 1px solid #ccc; }
+    .list-color { text-transform: uppercase; float: left; margin: 0; }
+    .list-order { float: right; height: 30px; padding: 0 70px; position: relative; }
+    .change-list-order { display: block; margin: 0; }
+    .move-list-left, .move-list-right { position: absolute; top: -20px; left: 0; font-size: 20px; width: 1em; height: 1em; padding: 25px; cursor: pointer; transition: color 0.2s; }
+    .move-list-left:hover, .move-list-right:hover { color: #aaa; }
+    .move-list-right { left: auto; right: 0; }
 
-    .list-item { border: solid #ddd; border-width: 1px 0; margin-top: -1px; position: relative; overflow: hidden; background-color: #fff; }
+    .editing .edit-list { opacity: 1; }
+    .editing .edit-item, .open .edit-item { opacity: 1; width: 70px; transition: width 0s 0s, opacity 0.2s; }
+    .editing .delete-list { opacity: 0.6; width: 70px; padding: 25px; transition: width 0s 0s, opacity 0.2s; }
+    .editing .list-settings { height: 30px; padding: 20px 0 20px; }
+    .edit-list:hover, .delete-list:hover { opacity: 1; }
+
+    .list-item { border: solid rgba(0,0,0,0.1); border-width: 1px 0; margin-top: -1px; position: relative; overflow: hidden; background-color: #fff; }
     .list-item h2 { position: relative; z-index: 1; }
     .list-item h2, .descr { padding: 20px 70px; line-height: 1.5em; cursor: pointer; width: 100%; box-sizing: border-box; }
     .descr { position: absolute; padding-top: 0; font: 14px/1.5em sans-serif; color: #888; cursor: default; }
@@ -45,25 +61,28 @@
     .checkbox:before { position: absolute; top: 50%; left: 50%; margin: -10px 0 0 -10px; }
     .checkbox:after { content: ""; box-sizing: border-box; display: block; width: 20px; height: 20px; border: 1px solid #ddd; }
     .edit-item { z-index: 2; position: absolute; bottom: 0; right: 0; opacity: 0; min-height: 210px; height: 100%; overflow: hidden; transition: width 0s 0.2s, opacity 0.2s; }
-    .edit-item a { position: absolute; right: 0; padding: 25px; width: 20px; height: 20px; color: #ddd; }
+    .edit-item a { position: absolute; right: 0; padding: 25px; width: 20px; height: 20px; color: #ddd; transition: color 0.2s; }
     .delete-item { top: auto; bottom: 0; }
     .delete-item:hover { color: #f00; }
     .move-item-down { top: 70px; }
     .move-item-up { top: 0; }
-    .move-item-down:hover, .move-item-up:hover { color: #aaa; }
+    .move-item-down:hover, .move-item-up:hover { color: #bbb; }
 
     .list-input { padding: 20px; padding-left: 70px; position: relative; }
     .list-input textarea { display: block; border: none; height: 1.5em; }
     .list-input textarea::-webkit-input-placeholder { color: #ddd; }
     .add-item { cursor: pointer; position: absolute; top: 0; left: 0; padding: 25px; color: #ddd; }
 
-    .edit-list, .checked, .move-item-up, .move-item-down, .delete-item, .delete-list, .add-item { font-family: 'icomoon'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+    .edit-list, .checked, .move-item-up, .move-item-down, .move-list-right, .move-list-left, .delete-item, .delete-list, .add-item, .list-settings:before { font-family: 'icomoon'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
     .checked:before { content: "\e600"; }
     .delete-item:before, .delete-list:before { content: "\e601"; }
     .edit-list:before { content: "\e602"; }
     .add-item:before { content: "\e603"; }
     .move-item-up:before { content: "\e604"; }
     .move-item-down:before { content: "\e605"; }
+    .move-list-left:before { content: "\e606"; }
+    .move-list-right:before { content: "\e607"; }
+    .list-settings:before { content: "\e608"; }
   </style>
 
 </head>
@@ -76,10 +95,11 @@
       <div class="list-container">
         <ul class="list">
           <li class="list-header" style="background-color:#0C0"><h1>Finishing This App</h1><a href="#" class="edit-list"></a><a href="#" class="delete-list"></a></li>
+          <li class="list-settings"><textarea class="list-color" cols="7" title="List color">0C0</textarea><div class="list-order" title="List order"><div class="move-list-left"></div><textarea class="change-list-order" cols="1">1</textarea><div class="move-list-right"></div></div></li>
           <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Add icons</h2></li>
           <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Add description box</h2></li>
           <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Create 'Edit Mode'</h2></li>
-          <li class="list-item"><a href="#" class="checkbox"></a><h2>Add list settings</h2></li>
+          <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Add list settings</h2></li>
           <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Add hover effects</h2></li>
           <li class="list-item"><a href="#" class="checkbox"></a><h2>Add carousel effect</h2></li>
           <li class="list-item"><a href="#" class="checkbox checked"></a><h2>Create 'Edit Mode' functions (see&nbsp;below)</h2></li>
@@ -96,15 +116,23 @@
     <div class="list-wrapper">
       <div class="list-container">
         <ul class="list">
-          <li class="list-header">
-            <h1>Title</h1>
+          <li class="list-header" style="background-color:#00CCFF">
+            <h1 contenteditable="false" spellcheck="false">Title</h1>
             <a href="#" class="delete-list" title="Delete list"></a>
             <a href="#" class="edit-list" title="Edit list"></a>
+          </li>
+          <li class="list-settings">
+            <textarea class="list-color" cols="7" title="List color">00CCFF</textarea>
+            <div class="list-order" title="List order">
+              <div class="move-list-left"></div>
+              <textarea class="change-list-order" cols="1">1</textarea>
+              <div class="move-list-right"></div>
+            </div>
           </li>
 
           <li class="list-item">
             <h2 class="item-title">Optio, cupiditate.</h2>
-            <div class="descr"><p contenteditable="true" title="Click to edit">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, molestias, assumenda, iusto error blanditiis autem sit nesciunt numquam quidem voluptates dicta fuga ipsam temporibus libero natus?</p></div>
+            <div class="descr"><p contenteditable="true" spellcheck="false" title="Click to edit">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, molestias, assumenda, iusto error blanditiis autem sit nesciunt numquam quidem voluptates dicta fuga ipsam temporibus libero natus?</p></div>
             <a href="#" class="checkbox" title="Mark/Unmark"></a>
             <div class="edit-item">
               <a href="#" class="move-item-up" title="Move item up"></a>
@@ -114,7 +142,7 @@
           </li>
           <li class="list-item">
             <h2 class="item-title">Lorem ipsum dolor sit amet, Aliq.</h2>
-            <div class="descr"><p contenteditable="true" title="Click to edit"></p></div>
+            <div class="descr"><p contenteditable="true" spellcheck="false" title="Click to edit"></p></div>
             <a href="#" class="checkbox" title="Mark/Unmark"></a>
             <div class="edit-item">
               <a href="#" class="move-item-up" title="Move item up"></a>
@@ -124,7 +152,7 @@
           </li>
           <li class="list-item">
             <h2 class="item-title">Provident, aspernatur.</h2>
-            <div class="descr"><p contenteditable="true" title="Click to edit"></p></div>
+            <div class="descr"><p contenteditable="true" spellcheck="false" title="Click to edit"></p></div>
             <a href="#" class="checkbox" title="Mark/Unmark"></a>
             <div class="edit-item">
               <a href="#" class="move-item-up" title="Move item up"></a>
@@ -134,7 +162,7 @@
           </li>
           <li class="list-item">
             <h2 class="item-title">Rem, minima.</h2>
-            <div class="descr"><p contenteditable="true" title="Click to edit"></p></div>
+            <div class="descr"><p contenteditable="true" spellcheck="false" title="Click to edit"></p></div>
             <a href="#" class="checkbox" title="Mark/Unmark"></a>
             <div class="edit-item">
               <a href="#" class="move-item-up" title="Move item up"></a>
@@ -154,10 +182,18 @@
     <div class="list-wrapper">
       <div class="list-container">
         <ul class="list">
-          <li class="list-header">
-            <h1>Title</h1>
+          <li class="list-header" style="background-color:#00CCFF">
+            <h1 contenteditable="false" spellcheck="false">Title</h1>
             <a href="#" class="delete-list"></a>
             <a href="#" class="edit-list"></a>
+          </li>
+          <li class="list-settings">
+            <textarea class="list-color" cols="7" title="List color">00CCFF</textarea>
+            <div class="list-order" title="List order">
+              <div class="move-list-left"></div>
+              <textarea class="change-list-order" cols="1">2</textarea>
+              <div class="move-list-right"></div>
+            </div>
           </li>
           <li class="list-input">
             <div class="add-item"></div>
@@ -173,7 +209,7 @@
 <script>
   function forEach(a,b){for(var i=0;i<a.length;i++)b(i,a[i])}
   function makeElem(a){var b=document.createElement('div');return b.innerHTML=a,b.firstChild}
-  function hasClass(a,b){var c=new RegExp("(^|\\s+)"+b+"(\\s+|$)");return c.test(a.className)}
+  function hasClass(a,b){var c=new RegExp("(^|\\s+)"+b+"(\\s+|$)");return a?c.test(a.className):void 0}
   function addClass(a,b){hasClass(a,b)||(a.className=a.className+" "+b);return a}
   function removeClass(a,b){var c=new RegExp("(^|\\s+)"+b+"(\\s+|$)");a.className=a.className.replace(c,"");return a}
   function toggleClass(a,b){var c=hasClass(a,b)?removeClass:addClass;c(a,b);return a}
@@ -184,7 +220,7 @@
       item_tmpl = [
         '<li class="list-item">',
           '<h2 class="item-title">{{title}}</h2>',
-          '<div class="descr"><p contenteditable="true" title="Click to edit">{{notes}}</p></div>',
+          '<div class="descr"><p contenteditable="true" spellcheck="false" title="Click to edit">{{notes}}</p></div>',
           '<a href="#" class="checkbox" title="Mark/Unmark"></a>',
           '<div class="edit-item">',
             '<a href="#" class="move-item-up" title="Move item up"></a>',
@@ -194,7 +230,40 @@
         '</li>'].join(''),
       get_list = function(e){return hasClass(e,'list-wrapper')?e:get_list(e.parentNode)},
       get_item = function(e){return hasClass(e,'list-item')?e:get_item(e.parentNode)},
-      edit_toggle = function(e){e.preventDefault(),toggleClass(get_list(this),'editing')},
+      watch_title = function(e){e.which===13&&edit_toggle.call(this,e);(this.innerText.length==18&&e.which!=8)&&e.preventDefault()},
+      change_color = function (e) {
+        var ch = String.fromCharCode(e.keyCode),
+          allowed = "0123456789ABCDEF".indexOf(ch.toUpperCase()) != -1,
+          header = get_list(this).querySelector('.list-header'),
+          hex = this.value, h = hex.split(''),
+          pad = function(s){return s.length!=6?pad(s+'0'):s},
+          getContrast = function (a) {
+            var b = parseInt(a.substr(0,2),16),
+              c = parseInt(a.substr(2,2),16),
+              d = parseInt(a.substr(4,2),16),
+              e = (299*b+587*c+114*d)/1e3;
+            return e>=150?"#000":"#fff";
+          };
+        if (e.which == 13) {
+          e.preventDefault();
+          if (hex.length < 6) {
+            if (hex.length != 3) this.value = hex = pad(hex);
+            else hex = h[0]+h[0]+h[1]+h[1]+h[2]+h[2]; // this is ugly
+          } else if (hex.length > 6) { this.value = ''; return false }
+          header.style.color = getContrast(hex);
+          header.style.backgroundColor = '#' + hex;
+        } else if ((!allowed || hex.length == 6) && e.which != 8) {
+          e.preventDefault();
+        }
+      },
+      edit_toggle = function (e) {
+        var list = get_list(this),
+          list_title = list.querySelector('.list-header h1'),
+          editing = list_title.contentEditable == 'true';
+        e.preventDefault();
+        toggleClass(list,'editing');
+        list_title.contentEditable = editing?'false':'true';
+      },
       descr_toggle = function () {
         var item = toggleClass(this.parentNode, 'open'),
           item_descr = item.querySelector('.descr'),
@@ -220,7 +289,7 @@
       },
       add_item = function (e) {
         var new_item, new_item_html;
-        if (e.which === 13) {
+        if (e.which == 13) {
           e.preventDefault();
           if (this.value.trim().length) {
             new_item_html = item_tmpl.replace('{{title}}', this.value.trim());
@@ -240,14 +309,6 @@
         item.style.height = '0px';
         setTimeout(function () { item.parentNode.removeChild(item) }, 200);
       },
-      delete_list = function () {
-        var list = get_list(this);
-        list.style.transition = 'opacity 200ms, top 200ms, width 300ms 200ms';
-        list.style.top = '-500px';
-        list.style.width = '0px';
-        list.style.opacity = 0;
-        setTimeout(function () { list.parentNode.removeChild(list) }, 500);
-      },
       move_item = function (d) {
         var item = get_item(this), u = d=='up',
           x_item = u?item.previousElementSibling:item.nextElementSibling,
@@ -255,7 +316,6 @@
         if (!hasClass(x_item,'list-item')) return false;
         item_height = item.offsetHeight,
         x_item_height = x_item.offsetHeight;
-        console.log(x_item_height);
         item.style.transition = 'top 200ms';
         x_item.style.transition = 'top 200ms';
         item.style.top = (u?'-':'') + x_item_height + 'px';
@@ -268,15 +328,51 @@
           item.style.top = '';
         }, 200)
       },
+      delete_list = function () {
+        var list = get_list(this);
+        list.style.transition = 'opacity 200ms, top 200ms, width 300ms 200ms';
+        list.style.top = '-500px';
+        list.style.width = '0px';
+        list.style.opacity = 0;
+        setTimeout(function () { list.parentNode.removeChild(list) }, 500);
+      },
+      move_list = function (d) {
+        // This is earily similar to move_item()
+        // Consider combining functions for the sake of DRY
+        var list = get_list(this), l = d=='left',
+          x_list = l?list.previousElementSibling:list.nextElementSibling,
+          list_width, x_list_width;
+        if (!hasClass(x_list,'list-wrapper')) return false;
+        list_width = list.offsetWidth,
+        x_list_width = x_list.offsetWidth;
+        list.style.transition = 'left 200ms';
+        x_list.style.transition = 'left 200ms';
+        list.style.left = (l?'-':'') + x_list_width + 'px';
+        x_list.style.left = (l?'':'-') + list_width + 'px';
+        setTimeout(function () {
+          list.parentNode.insertBefore(l?list:x_list, l?x_list:list);
+          x_list.style.transition = '';
+          list.style.transition = '';
+          x_list.style.left = '';
+          list.style.left = '';
+        }, 200);
+        // Similarities stop
+        var order = list.querySelector('.change-list-order'),
+          x_order = x_list.querySelector('.change-list-order'),
+          val = order.value, x_val = x_order.value;
+        order.value = x_val; x_order.value = val;
+      },
       deligatedEvents = function (e) {
         var t = e.target,
           callEvent = function(a,b){e.preventDefault(),a.call(e.target,b)};
         if (hasClass(t,'checkbox')) toggleClass(e.target,'checked');
-        else if (hasClass(t,'delete-item')) callEvent(delete_item);
-        else if (hasClass(t,'item-title')) callEvent(descr_toggle);
-        else if (hasClass(t,'move-item-up')) callEvent(move_item,'up');
-        else if (hasClass(t,'move-item-down')) callEvent(move_item,'down');
-        else if (hasClass(t,'add-item')) t.parentNode.querySelector('textarea').focus();
+        if (hasClass(t,'delete-item')) callEvent(delete_item);
+        if (hasClass(t,'item-title')) callEvent(descr_toggle);
+        if (hasClass(t,'move-item-up')) callEvent(move_item,'up');
+        if (hasClass(t,'move-item-down')) callEvent(move_item,'down');
+        if (hasClass(t,'add-item')) t.parentNode.querySelector('textarea').focus();
+        if (hasClass(t,'move-list-left')) callEvent(move_list,'left');
+        if (hasClass(t,'move-list-right')) callEvent(move_list,'right');
       };
 
     document.querySelector('.main-wrapper').style.bottom = '-' + get_scrollbar_size() + 'px';
@@ -284,6 +380,8 @@
     forEach(lists, function (i, list) {
       list.querySelector('.list-container').style.padding = '0 ' + Math.ceil(get_scrollbar_size()/2) + 'px';
       list.querySelector('.list-input textarea').addEventListener('keydown', add_item);
+      list.querySelector('.list-header h1').addEventListener('keydown', watch_title);
+      list.querySelector('.list-color').addEventListener('keypress', change_color);
       list.querySelector('.delete-list').addEventListener('click', delete_list);
       list.querySelector('.edit-list').addEventListener('click', edit_toggle);
       list.addEventListener('click', deligatedEvents);
