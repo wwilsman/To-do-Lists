@@ -1,11 +1,9 @@
-
 function forEach(a,b){for(var i=0;i<a.length;i++)b(i,a[i])}
 function makeElem(a){var b=document.createElement('div');return b.innerHTML=a,b.firstChild}
 function hasClass(a,b){var c=new RegExp("(^|\\s+)"+b+"(\\s+|$)");return a?c.test(a.className):void 0}
 function addClass(a,b){hasClass(a,b)||(a.className=a.className+" "+b);return a}
 function removeClass(a,b){var c=new RegExp("(^|\\s+)"+b+"(\\s+|$)");a.className=a.className.replace(c,"");return a}
 function toggleClass(a,b){var c=hasClass(a,b)?removeClass:addClass;c(a,b);return a}
-function Ajax(a){var c={d:a.method||"get",e:a.url,f:a.data||"",g:a.callback||null},d=new XMLHttpRequest,e=function(){4==d.readyState&&c.g&&c.g(d.responseText)};"POST"==c.d.toUpperCase()?(d.open("POST",c.e,!0),d.setRequestHeader("Content-type","application/x-www-form-urlencoded"),d.onreadystatechange=e,d.send(c.f)):(d.open("GET",c.e+"?"+c.f,!0),d.onreadystatechange=e,d.send(null))}
 
 function Todolist () {
   var self = this,
@@ -42,8 +40,24 @@ function Todolist () {
           '<a href="#" class="delete-item" title="Delete item"></a>',
         '</div>',
       '</li>'].join(''),
+    scrollbar_size = (function(){var b,a=document.createElement("div"),c=document.body;return a.style.overflow="scroll",a.style.position="absolute",c.appendChild(a),b=a.offsetWidth,c.removeChild(a),b}()),
+    is_mobile = function(){return window.innerWidth<600},
     get = function(p,e){var l=p!='item';return hasClass(e,l?'list-wrapper':'list-item')?e:get(p,e.parentNode)},
     watch_title = function(e){e.which===13&&edit_toggle.call(this,e);(this.innerText.length==18&&e.which!=8)&&e.preventDefault()},
+    adj_cont_width = function () {
+      var main_cont = document.querySelector('.main-container'), total_width = 0;
+      main_cont.style.transition = 'width 200ms';
+      main_cont.offsetWidth // force repaint
+      if(!is_mobile()) {
+        forEach(main_cont.children,function(i,l){total_width+=l.offsetWidth});
+        main_cont.style.width = total_width + 'px';
+      } else {
+        total_width = main_cont.children.length;
+        forEach(main_cont.children,function(i,l){l.style.width=(100/total_width)+'%'});
+        main_cont.style.width = total_width * 100 + '%';
+      }
+      setTimeout(function(){main_cont.style.transition=''})
+    },
     change_color = function (e) {
       var ch = String.fromCharCode(e.keyCode),
         allowed = "0123456789ABCDEF".indexOf(ch.toUpperCase()) != -1,
@@ -59,10 +73,8 @@ function Todolist () {
         };
       if (e.which == 13) {
         e.preventDefault();
-        if (hex.length < 6) {
-          if (hex.length != 3) this.value = hex = pad(hex);
-          else hex = h[0]+h[0]+h[1]+h[1]+h[2]+h[2]; // this is ugly
-        } else if (hex.length > 6) { this.value = ''; return false }
+        if (hex.length < 6 && hex.length != 3) this.value = hex = pad(hex);
+        else if (hex.length > 6) { this.value = ''; return false }
         header.style.color = getContrast(hex);
         header.style.backgroundColor = '#' + hex;
       } else if ((!allowed || hex.length == 6) && e.which != 8) {
@@ -80,14 +92,15 @@ function Todolist () {
     descr_toggle = function () {
       var item = toggleClass(this.parentNode, 'open'),
         item_descr = item.querySelector('.descr'),
-        item_height = this.offsetHeight + item_descr.offsetHeight;
+        item_height = this.offsetHeight + item_descr.offsetHeight,
+        aside_height = item.querySelector('.edit-item').offsetHeight;
       item.style.height = item.offsetHeight + 'px';
       item.offsetHeight // force repaint
       item.style.transition = 'height 200ms';
       if (hasClass(item, 'open')) {
-        item.style.height = Math.max(item_height, 210) + 'px';
+        item.style.height = Math.max(item_height, aside_height) + 'px';
         setTimeout(function () { 
-          item.style.minHeight = '210px';
+          item.style.minHeight = aside_height + 'px';
           item_descr.style.position = 'static' 
         }, 200);
       } else { 
@@ -114,10 +127,11 @@ function Todolist () {
         }
       }
     },
-    create_list = function (i, o) {
+    create_list = function (i, o, r) {
       var new_list, new_list_html = list_tmpl, items_html = '';
       new_list_html = new_list_html.replace('{{title}}', o.title);
-      new_list_html = new_list_html.replace(/{{color}}/g, o.settings.color);
+      new_list_html = new_list_html.replace(/{{color}}/g, o.settings.color),
+      list_container = document.querySelector('.main-container');
       forEach(o.items, function (i, item) {
         var new_item_html = item_tmpl;
         new_item_html = new_item_html.replace('{{title}}', item.title);
@@ -127,23 +141,35 @@ function Todolist () {
       });
       new_list_html = new_list_html.replace('{{items}}', items_html);
       new_list = makeElem(new_list_html);
-      document.querySelector('.main-container').appendChild(new_list);
+      new_list.style.opacity = 0;
+      new_list.style.transition = 'opacity 400ms';
+      list_container.insertBefore(new_list, list_container.querySelector('.add-list-wrapper'));
+      new_list.offsetWidth // force repaint
+      new_list.style.opacity = '';
+      setTimeout(function(){new_list.style.transition=''},400);
+      adj_cont_width();
+      return r?new_list:void 0;
     },
     del = function (p) {
-      var el = get(p, this);
+      var el = get(p, this), t;
       if (p == 'list') {
-        el.style.transition = 'opacity 200ms, top 200ms, width 300ms 200ms';
+        el.style.transition = 'opacity 200ms, top 200ms, width 200ms 200ms';
         el.style.top = '-500px';
         el.style.width = '0px';
         el.style.opacity = 0;
+        t = 400;
       } else {
         el.style.height = el.offsetHeight + 'px';
         el.style.minHeight = '';
         el.offsetHeight // force repaint
         el.style.transition = 'height 200ms';
         el.style.height = '0px';
+        t = 200;
       }
-      setTimeout(function(){el.parentNode.removeChild(el)},200);
+      setTimeout(function(){
+        el.parentNode.removeChild(el)
+        p=='list'&&adj_cont_width();
+      },t);
     },
     arrange = function (str) {
       // Managed to combine FOUR functions here
@@ -184,23 +210,30 @@ function Todolist () {
       var a,x=new XMLHttpRequest,f=function(){4==x.readyState&&c(JSON.parse(x.responseText))};
       x.open("GET","todo.json",true),x.onreadystatechange=f,x.send(null)
     },
-    get_scrollbar_size = function(){var b,a=document.createElement("div"),c=document.body;return a.style.overflow="scroll",a.style.position="absolute",c.appendChild(a),b=a.offsetWidth,c.removeChild(a),b},
-    addListeners = function () {
-      forEach(document.querySelectorAll('.list-wrapper'), function (i, list) {
-        list.querySelector('.list-container').style.padding = '0 ' + Math.ceil(get_scrollbar_size()/2) + 'px';
-        list.querySelector('.list-input textarea').addEventListener('keydown', add_item);
-        list.querySelector('.list-header h1').addEventListener('keydown', watch_title);
-        list.querySelector('.list-color').addEventListener('keypress', change_color);
-        list.querySelector('.edit-list').addEventListener('click', edit_toggle);
-        list.addEventListener('click', deligatedEvents);
-      });
+    addListeners = function (i, list) {
+      list.querySelector('.list-container').style.padding = '0 ' + Math.ceil(scrollbar_size/2) + 'px'; 
+      list.querySelector('.list-input textarea').addEventListener('keydown', add_item);
+      list.querySelector('.list-header h1').addEventListener('keydown', watch_title);
+      list.querySelector('.list-color').addEventListener('keypress', change_color);
+      list.querySelector('.edit-list').addEventListener('click', edit_toggle);
+      list.addEventListener('click', deligatedEvents);
+    },
+    add_list = function (e) {
+      var new_list_obj = {"title":"","settings":{"color":"0CF"},"items":[]},
+        new_list = create_list(null, new_list_obj, true),
+        new_title = new_list.querySelector('.list-header h1');
+      e.preventDefault();
+      addListeners(null, new_list);
+      toggleClass(new_list,'editing');
+      new_title.contentEditable = 'true';
+      new_title.focus();
     };
+
   self.init = function () {
-    document.querySelector('.main-wrapper').style.bottom = '-' + get_scrollbar_size() + 'px';
-    request_json(function (arr) {
-      forEach(arr, create_list);
-      addListeners();
-    });
+    document.querySelector('.main-wrapper').style.bottom = '-' + scrollbar_size + 'px';
+    document.querySelector('.add-list-wrapper').addEventListener('click', add_list);
+    request_json(function(a){forEach(a,create_list),forEach(document.querySelectorAll('.list-wrapper'),addListeners)});
+    window.addEventListener('resize', adj_cont_width);
     return self;
   };
 };

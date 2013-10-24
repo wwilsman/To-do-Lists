@@ -6,9 +6,9 @@
     },
     "items": [
       {
-        "title": "Tidy everything up",
+        "title": "Squash some bugs",
         "completed": false,
-        "notes": "Fade lists in to prevent scrollbar flash.<br>Fix .main-container width to adjust to number of lists (currently static @ 1420px)."
+        "notes": "Double clicking open item in list causes side-bar to disappear; fixed by clicking again.<br><br>Hidden scrollbar is buggy. Might be caused by 'hacking' horizontal scroll and therefore could be fixed by carousel implimentation.<br><br>When adding new list, page jumps to odd position. Possibly fixed when carousel is implimented.<br><br>Gotta work on that carousel."
       },
       {
         "title": "Add carousel effect",
@@ -24,6 +24,11 @@
         "title": "Add ability to work locally",
         "completed": false,
         "notes": "Latest update uses AJAX to call .json file; XMLHttpRequest's throw security errors when local file access is attempted."
+      },
+      {
+        "title": "Tidy everything up",
+        "completed": true,
+        "notes": "Fade lists in to prevent scrollbar flash.<br>Fix .main-container width to adjust to number of lists."
       }
     ]
   },
@@ -55,13 +60,5 @@
         "notes": ""
       }
     ]
-  },
-
-  {
-    "title": "Title",
-    "settings": {
-      "color": "0CF"
-    },
-    "items": []
   }
 ]
