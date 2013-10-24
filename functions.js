@@ -41,15 +41,15 @@ function Todolist () {
         '</div>',
       '</li>'].join(''),
     scrollbar_size = (function(){var b,a=document.createElement("div"),c=document.body;return a.style.overflow="scroll",a.style.position="absolute",c.appendChild(a),b=a.offsetWidth,c.removeChild(a),b}()),
-    is_mobile = function(){return window.innerWidth<600},
+    is_mobile_layout = function(){return window.innerWidth<600},
     get = function(p,e){var l=p!='item';return hasClass(e,l?'list-wrapper':'list-item')?e:get(p,e.parentNode)},
     watch_title = function(e){e.which===13&&edit_toggle.call(this,e);(this.innerText.length==18&&e.which!=8)&&e.preventDefault()},
     adj_cont_width = function () {
       var main_cont = document.querySelector('.main-container'), total_width = 0;
       main_cont.style.transition = 'width 200ms';
       main_cont.offsetWidth // force repaint
-      if(!is_mobile()) {
-        forEach(main_cont.children,function(i,l){total_width+=l.offsetWidth});
+      if(!is_mobile_layout()) {
+        forEach(main_cont.children,function(i,l){total_width+=l.offsetWidth,l.style.width=''});
         main_cont.style.width = total_width + 'px';
       } else {
         total_width = main_cont.children.length;
