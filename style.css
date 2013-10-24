@@ -1,0 +1,75 @@
+/* Eric Meyer's Reset CSS v2.0 - http://cssreset.com */
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,canvas,details,embed,figure,figcaption,footer,header,hgroup,menu,nav,output,ruby,section,summary,time,mark,audio,video{border:0;font-size:100%;font:inherit;vertical-align:baseline;margin:0;padding:0}article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section{display:block}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:none}table{border-collapse:collapse;border-spacing:0}
+
+html { background-color: #888; height: 100%; }
+body { height: 100%; font: 20px/1.5em serif; overflow: hidden; }
+h1 { font-size: 30px; line-height: 1em; text-align: center; }
+h2 { font-size: 20px; line-height: 1em; }
+textarea { width: 100%; font: inherit; border: 1px solid #ddd; padding: 0; resize: none; overflow: hidden; }
+textarea:focus { outline: none; }
+a { text-decoration: none; color: inherit; }
+
+.main-wrapper { overflow-y: hidden; overflow-x: scroll; position: absolute; top: 0; right: 0; bottom: -15px; left: 0; }
+.main-container { height: 100%; width: 1380px; padding: 0 20px; position: relative; top: 0; left: 50%; margin-left: -250px; }
+.main-container:after { content: ''; display: table; clear: both; }
+
+.list-wrapper { height: 100%; width: 460px; overflow: hidden; float: left; position: relative; }
+.list-container { height: 100%; width: 100%; overflow-y: scroll; overflow-x: hidden; }
+
+.list { background-color: #fff; border-radius: 10px; width: 420px; margin: 70px auto; box-shadow: 0 0 20px rgba(0,0,0,0.2); }
+
+.list-header { z-index: 10; position: relative; padding: 20px 80px; border-radius: 10px 10px 0 0; border-bottom: 1px solid rgba(0,0,0,0.1); color: #fff; transition: color 0.2s, background-color 0.2s; }
+.list-header h1 { box-sizing: border-box; transition: all 0.2s; border-radius: 10px; border: 1px solid transparent; margin: -6px; line-height: 40px; white-space: nowrap; }
+.list-header h1[contenteditable='true'] { background-color: #fff; color: #000; box-shadow: 0 0 5px rgba(0,0,0,0.1) inset; border-color: #ccc; }
+.list-header h1[contenteditable='true']:focus { outline: none; }
+.list-header h1[contenteditable='false']:empty:before { content: "\A0"; }
+.edit-list, .delete-list { position: absolute; bottom: 0; right: 0; padding: 30px 25px 20px; line-height: 1em; opacity: 0.6; transition: opacity 0.2s; }
+.delete-list { box-sizing: border-box; padding: 0; right: auto; left: 0; opacity: 0; width: 0; overflow: hidden; transition: padding 0s 0.2s, width 0s 0.2s, opacity 0.2s; }
+
+.list-settings { padding: 0; overflow: hidden; background-color: #f0f0f0; font: 14px/30px sans-serif; color: #ccc; height: 0; transition: padding 0.2s, height 0.2s; }
+.list-settings:before { float: left; display: block; font-size: 20px; width: 1em; height: 1em; padding: 5px 25px; }
+.list-settings textarea { box-sizing: border-box; border-radius: 10px; padding: 5px 10px; height: 30px; line-height: 20px; text-align: center; width: auto; box-shadow: 0 0 5px rgba(0,0,0,0.1) inset; border: 1px solid #ccc; }
+.list-color { text-transform: uppercase; float: left; margin: 0; }
+.list-order { float: right; height: 30px; padding: 0 70px; position: relative; }
+.move-list-left:hover, .move-list-right:hover { color: #aaa; }
+.move-list-left, .move-list-right { float: right; margin-top: -20px; font-size: 20px; width: 1em; height: 1em; padding: 25px; transition: color 0.2s; }
+
+.editing .edit-list { opacity: 1; }
+.editing .edit-item, .open .edit-item { opacity: 1; width: 70px; transition: width 0s 0s, opacity 0.2s; }
+.editing .delete-list { opacity: 0.6; width: 70px; padding: 25px; transition: width 0s 0s, opacity 0.2s; }
+.editing .list-settings { height: 30px; padding: 20px 0 20px; }
+.edit-list:hover, .delete-list:hover { opacity: 1; }
+
+.list-item { border: solid rgba(0,0,0,0.1); border-width: 1px 0; margin-top: -1px; position: relative; overflow: hidden; background-color: #fff; }
+.list-item h2 { position: relative; z-index: 1; }
+.list-item h2, .descr { padding: 20px 70px; line-height: 1.5em; cursor: pointer; width: 100%; box-sizing: border-box; }
+.descr { position: absolute; padding-top: 0; font: 14px/1.5em sans-serif; color: #888; cursor: default; }
+.descr p { cursor: text; display: block; padding: 5px; margin: -5px; margin-right: 0; }
+.descr p:focus { outline: none; box-shadow: 0 0 0 1px #ddd; }
+.descr p:empty:after { content: 'Click to add notes'; color: #ddd; }
+.checkbox { z-index: 2; position: absolute; top: 0; left: 0; width: 1em; height: 1em; padding: 25px; color: #0c0; }
+.checkbox:before { position: absolute; top: 50%; left: 50%; margin: -10px 0 0 -10px; }
+.checkbox:after { content: ""; box-sizing: border-box; display: block; width: 20px; height: 20px; border: 1px solid #ddd; }
+.edit-item { z-index: 2; position: absolute; bottom: 0; right: 0; opacity: 0; min-height: 210px; height: 100%; overflow: hidden; transition: width 0s 0.2s, opacity 0.2s; }
+.edit-item a { position: absolute; right: 0; padding: 25px; width: 20px; height: 20px; color: #ddd; transition: color 0.2s; }
+.delete-item { top: auto; bottom: 0; }
+.delete-item:hover { color: #f00; }
+.move-item-down { top: 70px; }
+.move-item-up { top: 0; }
+.move-item-down:hover, .move-item-up:hover { color: #bbb; }
+
+.list-input { padding: 20px; padding-left: 70px; position: relative; }
+.list-input textarea { display: block; border: none; height: 1.5em; }
+.list-input textarea::-webkit-input-placeholder { color: #ddd; }
+.add-item { cursor: pointer; position: absolute; top: 0; left: 0; padding: 25px; color: #ddd; }
+
+.edit-list, .checked, .move-item-up, .move-item-down, .move-list-right, .move-list-left, .delete-item, .delete-list, .add-item, .list-settings:before { font-family: 'icomoon'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.checked:before { content: "\e600"; }
+.delete-item:before, .delete-list:before { content: "\e601"; }
+.edit-list:before { content: "\e602"; }
+.add-item:before { content: "\e603"; }
+.move-item-up:before { content: "\e604"; }
+.move-item-down:before { content: "\e605"; }
+.move-list-left:before { content: "\e606"; }
+.move-list-right:before { content: "\e607"; }
+.list-settings:before { content: "\e608"; }

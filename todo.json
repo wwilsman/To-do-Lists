@@ -1,0 +1,67 @@
+[
+  {
+    "title": "Finishing This App",
+    "settings": {
+      "color": "0C0"
+    },
+    "items": [
+      {
+        "title": "Tidy everything up",
+        "completed": false,
+        "notes": "Fade lists in to prevent scrollbar flash.<br>Fix .main-container width to adjust to number of lists (currently static @ 1420px)."
+      },
+      {
+        "title": "Add carousel effect",
+        "completed": false,
+        "notes": "For mice that can't scroll horizontally & touchscreen devices."
+      },
+      {
+        "title": "Impliment file editing",
+        "completed": false,
+        "notes": "Allowing lists to be updated to reflect visible changes."
+      },
+      {
+        "title": "Add ability to work locally",
+        "completed": false,
+        "notes": "Latest update uses AJAX to call .json file; XMLHttpRequest's throw security errors when local file access is attempted."
+      }
+    ]
+  },
+
+  {
+    "title": "Title",
+    "settings": {
+      "color": "0CF"
+    },
+    "items": [
+      {
+        "title": "Lorem ipsum dolor.",
+        "completed": false,
+        "notes": "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Labore, molestias, assumenda, iusto error blanditiis autem sit nesciunt numquam quidem voluptates dicta fuga ipsam temporibus libero natus?"
+      },
+      {
+        "title": "Optio, cupiditate.",
+        "completed": true,
+        "notes": ""
+      },
+      {
+        "title": "Provident, aspernatur.",
+        "completed": false,
+        "notes": ""
+      },
+      {
+        "title": "Rem, minima.",
+        "completed": false,
+        "notes": ""
+      }
+    ]
+  },
+
+  {
+    "title": "Title",
+    "settings": {
+      "color": "0CF"
+    },
+    "items": []
+  }
+]
