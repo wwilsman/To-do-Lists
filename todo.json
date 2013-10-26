@@ -6,14 +6,9 @@
     },
     "items": [
       {
-        "title": "Squash some bugs",
+        "title": "Make carousel work on mobile",
         "completed": false,
-        "notes": "Double clicking open item in list causes side-bar to disappear; fixed by clicking again.<br><br>Hidden scrollbar is buggy. Might be caused by 'hacking' horizontal scroll and therefore could be fixed by carousel implimentation.<br><br>When adding new list, page jumps to odd position. Possibly fixed when carousel is implimented.<br><br>Gotta work on that carousel."
-      },
-      {
-        "title": "Add carousel effect",
-        "completed": false,
-        "notes": "For mice that can't scroll horizontally & touchscreen devices."
+        "notes": "Need to decide how to impliment the current carousel to work on mobile. i.e. swiping, etc."
       },
       {
         "title": "Impliment file editing",
@@ -24,11 +19,6 @@
         "title": "Add ability to work locally",
         "completed": false,
         "notes": "Latest update uses AJAX to call .json file; XMLHttpRequest's throw security errors when local file access is attempted."
-      },
-      {
-        "title": "Tidy everything up",
-        "completed": true,
-        "notes": "Fade lists in to prevent scrollbar flash.<br>Fix .main-container width to adjust to number of lists."
       }
     ]
   },

@@ -9,8 +9,8 @@ textarea { width: 100%; font: inherit; border: 1px solid #ddd; padding: 0; resiz
 textarea:focus { outline: none; }
 a { text-decoration: none; color: inherit; }
 
-.main-wrapper { overflow-y: hidden; overflow-x: scroll; position: absolute; top: 0; right: 0; left: 0; }
-.main-container { height: 100%; padding: 0 1em; position: relative; top: 0; left: 50%; margin-left: -12.5em; }
+.main-wrapper { overflow: hidden; position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.main-container { position: absolute; top: 0; left: 0; height: 100%; transition: left 0.2s; }
 .main-container:after { content: ''; display: table; clear: both; }
 
 .list-wrapper, .add-list-wrapper { height: 100%; width: 23em; overflow: hidden; float: left; position: relative; }
@@ -73,15 +73,14 @@ a { text-decoration: none; color: inherit; }
 .move-list-right:before { content: "\e607"; }
 .list-settings:before { content: "\e608"; }
 
-.add-list-wrapper { text-align: center; opacity: 0.4; cursor: pointer; transition: opacity 0.4s; }
+.add-list-wrapper { position: relative; text-align: center; opacity: 0.4; cursor: pointer; transition: opacity 0.4s; }
 .add-list-wrapper:before { content: ''; height: 100%; display: inline-block; vertical-align: middle; }
 .add-list-wrapper:hover { opacity: 1; }
 .add-list { display: inline-block; vertical-align: middle; font-size: 3em; color: #FFF; text-shadow: 0 0 0.5em rgba(0,0,0,0.2); }
 
 @media (max-width: 600px) {
-  .main-container { left: 0; margin-left: 0; padding: 0; }
   .list-container { width: 100%; }
-  .list { width: auto; margin: 0 -9px; min-height: 100%; border-radius: 0; }
+  .list { width: auto; min-height: 100%; border-radius: 0; }
   .list-header { border-radius: 0; }
   .list-input { border-bottom: 1px solid rgba(0,0,0,0.1); }
 }

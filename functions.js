@@ -2,7 +2,7 @@ function forEach(a,b){for(var i=0;i<a.length;i++)b(i,a[i])}
 function makeElem(a){var b=document.createElement('div');return b.innerHTML=a,b.firstChild}
 function hasClass(a,b){var c=new RegExp("(^|\\s+)"+b+"(\\s+|$)");return a?c.test(a.className):void 0}
 function addClass(a,b){hasClass(a,b)||(a.className=a.className+" "+b);return a}
-function removeClass(a,b){var c=new RegExp("(^|\\s+)"+b+"(\\s+|$)");a.className=a.className.replace(c,"");return a}
+function removeClass(a,b){var c=new RegExp("(^|\\s+)"+b+"(\\s+|$)");a.className=a.className.replace(c," ");return a}
 function toggleClass(a,b){var c=hasClass(a,b)?removeClass:addClass;c(a,b);return a}
 
 function Todolist () {
@@ -43,20 +43,47 @@ function Todolist () {
     scrollbar_size = (function(){var b,a=document.createElement("div"),c=document.body;return a.style.overflow="scroll",a.style.position="absolute",c.appendChild(a),b=a.offsetWidth,c.removeChild(a),b}()),
     is_mobile_layout = function(){return window.innerWidth<600},
     get = function(p,e){var l=p!='item';return hasClass(e,l?'list-wrapper':'list-item')?e:get(p,e.parentNode)},
+    carousel = {
+      set_active: function (l) {
+        var active_lists = document.querySelectorAll('.active-list');
+        forEach(active_lists,function(i,l){removeClass(l, 'active-list')});
+        addClass(l, 'active-list');
+      },
+      slide_to: function (l) {
+        var main_cont = l.parentNode,
+          all_lists_arr = Array.prototype.slice.call(main_cont.children),
+          lp = l.offsetWidth, li = all_lists_arr.indexOf(l);
+        main_cont.style.left = '-' + lp * li + 'px';
+        this.set_active(l);
+      }
+    },
     watch_title = function(e){e.which===13&&edit_toggle.call(this,e);(this.innerText.length==18&&e.which!=8)&&e.preventDefault()},
     adj_cont_width = function () {
-      var main_cont = document.querySelector('.main-container'), total_width = 0;
+      var main_cont = document.querySelector('.main-container'),
+        first_child = addClass(main_cont.firstElementChild, 'active-list'),
+        total_width = 0, list_width = first_child.offsetWidth;
       main_cont.style.transition = 'width 200ms';
       main_cont.offsetWidth // force repaint
-      if(!is_mobile_layout()) {
-        forEach(main_cont.children,function(i,l){total_width+=l.offsetWidth,l.style.width=''});
-        main_cont.style.width = total_width + 'px';
-      } else {
+      if(is_mobile_layout()) {
         total_width = main_cont.children.length;
-        forEach(main_cont.children,function(i,l){l.style.width=(100/total_width)+'%'});
         main_cont.style.width = total_width * 100 + '%';
+        main_cont.style.padding = '';
+        forEach(main_cont.children, function (i, l) {
+          var li = l.querySelector('.list');
+          li&&(li.style.margin = '0 -' + Math.ceil(scrollbar_size / 2) + 'px');
+          l.style.width = 100 / total_width + '%';
+        });
+      } else {
+        main_cont.style.padding = '0 ' + (window.innerWidth - list_width) / 2 + 'px';
+        forEach(main_cont.children, function (i, l) {
+          var li = l.querySelector('.list');
+          total_width += list_width;
+          li&&(li.style.margin = '');
+          l.style.width = '';
+        });
+        main_cont.style.width = total_width + 'px';
       }
-      setTimeout(function(){main_cont.style.transition=''})
+      setTimeout(function(){main_cont.style.transition=''},200)
     },
     change_color = function (e) {
       var ch = String.fromCharCode(e.keyCode),
@@ -81,37 +108,41 @@ function Todolist () {
         e.preventDefault();
       }
     },
-    edit_toggle = function (e) {
+    edit_toggle = function () {
       var list = get('list', this),
         list_title = list.querySelector('.list-header h1'),
         editing = list_title.contentEditable == 'true';
-      e.preventDefault();
       toggleClass(list,'editing');
       list_title.contentEditable = editing?'false':'true';
     },
     descr_toggle = function () {
-      var item = toggleClass(this.parentNode, 'open'),
+      var item = this.parentNode,
         item_descr = item.querySelector('.descr'),
         item_height = this.offsetHeight + item_descr.offsetHeight,
         aside_height = item.querySelector('.edit-item').offsetHeight;
-      item.style.height = item.offsetHeight + 'px';
-      item.offsetHeight // force repaint
-      item.style.transition = 'height 200ms';
-      if (hasClass(item, 'open')) {
-        item.style.height = Math.max(item_height, aside_height) + 'px';
+      item.opening===undefined&&(item.opening = false);
+      if (item.opening === false) {
+        item.opening = true; toggleClass(item, 'open');
+        item.style.height = item.offsetHeight + 'px';
+        item.offsetHeight // force repaint
+        item.style.transition = 'height 200ms';
+        if (hasClass(item, 'open')) {
+          item.style.height = Math.max(item_height, aside_height) + 'px';
+          setTimeout(function () { 
+            item.style.minHeight = aside_height + 'px';
+            item_descr.style.position = 'static' 
+          }, 200);
+        } else { 
+          item.style.minHeight = '';
+          item_descr.style.position = 'absolute';
+          item.style.height = this.offsetHeight + 'px';
+        }
         setTimeout(function () { 
-          item.style.minHeight = aside_height + 'px';
-          item_descr.style.position = 'static' 
+          item.style.transition = '';
+          item.style.height = '';
+          item.opening = false;
         }, 200);
-      } else { 
-        item.style.minHeight = '';
-        item_descr.style.position = 'absolute';
-        item.style.height = this.offsetHeight + 'px';
       }
-      setTimeout(function () { 
-        item.style.transition = '';
-        item.style.height = '';
-      }, 200);
     },
     add_item = function (e) {
       var new_item, new_item_html;
@@ -128,10 +159,11 @@ function Todolist () {
       }
     },
     create_list = function (i, o, r) {
-      var new_list, new_list_html = list_tmpl, items_html = '';
+      var new_list, new_list_html = list_tmpl, items_html = '',
+        list_container = document.querySelector('.main-container'),
+        add_list_el = list_container.querySelector('.add-list-wrapper');
       new_list_html = new_list_html.replace('{{title}}', o.title);
-      new_list_html = new_list_html.replace(/{{color}}/g, o.settings.color),
-      list_container = document.querySelector('.main-container');
+      new_list_html = new_list_html.replace(/{{color}}/g, o.settings.color);
       forEach(o.items, function (i, item) {
         var new_item_html = item_tmpl;
         new_item_html = new_item_html.replace('{{title}}', item.title);
@@ -141,18 +173,26 @@ function Todolist () {
       });
       new_list_html = new_list_html.replace('{{items}}', items_html);
       new_list = makeElem(new_list_html);
-      new_list.style.opacity = 0;
-      new_list.style.transition = 'opacity 400ms';
-      list_container.insertBefore(new_list, list_container.querySelector('.add-list-wrapper'));
-      new_list.offsetWidth // force repaint
-      new_list.style.opacity = '';
-      setTimeout(function(){new_list.style.transition=''},400);
-      adj_cont_width();
+      add_list_el.style.transition = 'left 200ms';
+      add_list_el.style.left = add_list_el.offsetWidth + 'px';
+      setTimeout(function () {
+        add_list_el.style.transition = '';
+        new_list.style.opacity = 0;
+        new_list.style.transition = 'opacity 400ms';
+        list_container.insertBefore(new_list, add_list_el);
+        new_list.offsetWidth // force repaint
+        new_list.style.opacity = '';
+        add_list_el.style.left = '';
+        setTimeout(function(){new_list.style.transition=''},400);
+        addListeners(null, new_list);
+        adj_cont_width();
+      }, 200)
       return r?new_list:void 0;
     },
     del = function (p) {
       var el = get(p, this), t;
       if (p == 'list') {
+        addClass(el.nextElementSibling, 'active-list');
         el.style.transition = 'opacity 200ms, top 200ms, width 200ms 200ms';
         el.style.top = '-500px';
         el.style.width = '0px';
@@ -185,19 +225,28 @@ function Todolist () {
       x_el.style.transition = anim + ' 200ms';
       el.style[anim] = (p?'-':'') + x_el_size + 'px';
       x_el.style[anim] = (p?'':'-') + el_size + 'px';
+      el.style.zIndex = 1000;
+      l&&carousel.slide_to(x_el);
       setTimeout(function () {
         el.parentNode.insertBefore(p?el:x_el, p?x_el:el);
+        l&&carousel.set_active(el);
         x_el.style.transition = '';
         el.style.transition = '';
         x_el.style[anim] = '';
         el.style[anim] = '';
+        el.style.zIndex = '';
       }, 200)
     },
     deligatedEvents = function (e) {
       var t = e.target,
         callEvent = function(a,b){e.preventDefault(),a.call(e.target,b)};
+      if (!hasClass(get('list', t), 'active-list')) {
+        carousel.slide_to(get('list', t));
+        return false;
+      }
       if (hasClass(t,'checkbox')) {e.preventDefault(),toggleClass(e.target,'checked')}
       if (hasClass(t,'item-title')) callEvent(descr_toggle);
+      if (hasClass(t,'edit-list')) callEvent(edit_toggle);
       if (hasClass(t,'delete-item')) callEvent(del, 'item');
       if (hasClass(t,'delete-list')) callEvent(del, 'list');
       if (hasClass(t,'move-item-up')) callEvent(arrange,'item prev');
@@ -211,29 +260,27 @@ function Todolist () {
       x.open("GET","todo.json",true),x.onreadystatechange=f,x.send(null)
     },
     addListeners = function (i, list) {
-      list.querySelector('.list-container').style.padding = '0 ' + Math.ceil(scrollbar_size/2) + 'px'; 
+      list.querySelector('.list-container').style.padding = '0 ' + Math.ceil(scrollbar_size / 2) + 'px';
       list.querySelector('.list-input textarea').addEventListener('keydown', add_item);
       list.querySelector('.list-header h1').addEventListener('keydown', watch_title);
       list.querySelector('.list-color').addEventListener('keypress', change_color);
-      list.querySelector('.edit-list').addEventListener('click', edit_toggle);
       list.addEventListener('click', deligatedEvents);
     },
-    add_list = function (e) {
+    add_list = function () {
       var new_list_obj = {"title":"","settings":{"color":"0CF"},"items":[]},
         new_list = create_list(null, new_list_obj, true),
         new_title = new_list.querySelector('.list-header h1');
-      e.preventDefault();
-      addListeners(null, new_list);
-      toggleClass(new_list,'editing');
-      new_title.contentEditable = 'true';
-      new_title.focus();
+      edit_toggle.call(new_list);
+      carousel.slide_to(new_list);
+      setTimeout(function(){new_title.focus()},200);
     };
 
   self.init = function () {
-    document.querySelector('.main-wrapper').style.bottom = '-' + scrollbar_size + 'px';
-    document.querySelector('.add-list-wrapper').addEventListener('click', add_list);
-    request_json(function(a){forEach(a,create_list),forEach(document.querySelectorAll('.list-wrapper'),addListeners)});
-    window.addEventListener('resize', adj_cont_width);
+    document.querySelector('.add-list-wrapper').addEventListener('click', function (e) {
+      e.preventDefault();hasClass(this,'active-list')?add_list():carousel.slide_to(this);
+    });
+    window.addEventListener('resize',adj_cont_width);
+    request_json(function(a){forEach(a,create_list)});
     return self;
   };
 };
