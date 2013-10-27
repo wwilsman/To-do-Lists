@@ -16,7 +16,7 @@ a { text-decoration: none; color: inherit; }
 .list-wrapper, .add-list-wrapper { height: 100%; width: 23em; overflow: hidden; float: left; position: relative; }
 .list-container { height: 100%; width: 100%; overflow-y: scroll; overflow-x: hidden; }
 
-.list { background-color: #fff; border-radius: 10px; width: 21em; margin: 3.5em auto; box-shadow: 0 0 1em rgba(0,0,0,0.2); }
+.list { background-color: #fff; border-radius: 10px; width: 21em; margin: 3.5em auto; box-shadow: 0 0 1em rgba(0,0,0,0.2); position: relative; }
 
 .list-header { z-index: 10; position: relative; padding: 1em 4em; border-radius: 0.5em 0.5em 0 0; border-bottom: 1px solid rgba(0,0,0,0.1); color: #fff; transition: color 0.2s, background-color 0.2s; }
 .list-header h1 { box-sizing: border-box; transition-property: background-color, color, box-shadow, border; transition-duration: 0.2s; border-radius: 0.5em; border: 1px solid transparent; margin: -0.25em 0; line-height: 1.5em; white-space: nowrap; }
@@ -57,26 +57,34 @@ a { text-decoration: none; color: inherit; }
 .move-item-up { top: 0; }
 .move-item-down:hover, .move-item-up:hover { color: #bbb; }
 
-.list-input { padding: 1em; padding-left: 3.5em; position: relative; }
-.list-input textarea { display: block; border: none; height: 1.5em; }
-.list-input textarea::-webkit-input-placeholder { color: #ddd; }
+.list-input { padding: 1em 3.5em; position: relative; }
+.list-input-textarea { display: block; border: none; min-height: 1.5em; }
+.list-input-textarea:empty:before { content: 'Add Item'; color: #ddd; }
+.list-input-textarea:focus { outline: none; }
 .add-item { cursor: pointer; position: absolute; top: 0; left: 0; padding: 1.25em; color: #ddd; }
 
-.edit-list, .checked, .move-item-up, .move-item-down, .move-list-right, .move-list-left, .delete-item, .delete-list, .add-item, .add-list, .list-settings:before { font-family: 'icomoon'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-.checked:before { content: "\e600"; }
+.edit-list, .checked, .move-item-up, .move-item-down, .move-list-right, .move-list-left, .delete-item, .delete-list, .add-item, .add-list, .list-settings:before, .alert-yes, .alert-no { font-family: 'icomoon'; speak: none; font-style: normal; font-weight: normal; font-variant: normal; text-transform: none; line-height: 1; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+.checked:before, .alert-yes:before { content: "\e600"; }
 .delete-item:before, .delete-list:before { content: "\e601"; }
 .add-item:before, .add-list:before { content: "\e603"; }
 .edit-list:before { content: "\e602"; }
 .move-item-up:before { content: "\e604"; }
 .move-item-down:before { content: "\e605"; }
-.move-list-left:before { content: "\e606"; }
-.move-list-right:before { content: "\e607"; }
-.list-settings:before { content: "\e608"; }
+.move-list-right:before { content: "\e606"; }
+.move-list-left:before { content: "\e607"; }
+.alert-no:before { content: "\e608"; }
+.list-settings:before { content: "\e609"; }
 
 .add-list-wrapper { position: relative; text-align: center; opacity: 0.4; cursor: pointer; transition: opacity 0.4s; }
 .add-list-wrapper:before { content: ''; height: 100%; display: inline-block; vertical-align: middle; }
 .add-list-wrapper:hover { opacity: 1; }
 .add-list { display: inline-block; vertical-align: middle; font-size: 3em; color: #FFF; text-shadow: 0 0 0.5em rgba(0,0,0,0.2); }
+
+.alert { box-sizing: border-box; overflow: hidden; position: absolute; top: 3.5em; left: 0; background-color: #c00; height: 0; width: 100%; color: rgba(255,255,255,0.6); transition: height 0.2s; }
+.alert h2 { padding: 1em 3.5em; line-height: 1.5em; }
+.alert-yes, .alert-no { position: absolute; width: 1em; height: 1em; padding: 1.25em; top: 0; right: 0; transition: color 0.2s; }
+.alert-yes:hover, .alert-no:hover { color: #fff; }
+.alert-yes { right: 3.5em; }
 
 @media (max-width: 600px) {
   .list-container { width: 100%; }
@@ -86,5 +94,5 @@ a { text-decoration: none; color: inherit; }
 }
 
 @media (max-width: 400px) {
-  body { font-size: 15px; }
+  body { font-size: 17px; }
 }

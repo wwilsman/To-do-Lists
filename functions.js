@@ -24,7 +24,7 @@ function Todolist () {
             '{{items}}',
             '<li class="list-input">',
               '<div class="add-item"></div>',
-              '<textarea placeholder="Add Item"></textarea>',
+              '<div class="list-input-textarea" contenteditable="true" spellcheck="false"></div>',
             '</li>',
           '</ul>',
         '</div>',
@@ -44,10 +44,14 @@ function Todolist () {
     is_mobile_layout = function(){return window.innerWidth<600},
     get = function(p,e){var l=p!='item';return hasClass(e,l?'list-wrapper':'list-item')?e:get(p,e.parentNode)},
     carousel = {
-      set_active: function (l) {
+      set_active: function (list) {
         var active_lists = document.querySelectorAll('.active-list');
-        forEach(active_lists,function(i,l){removeClass(l, 'active-list')});
-        addClass(l, 'active-list');
+        addClass(list, 'active-list');
+        if (active_lists.length) {
+          forEach(active_lists, function (i, l) {
+            removeClass(l, 'active-list');
+          });
+        }
       },
       slide_to: function (l) {
         var main_cont = l.parentNode,
@@ -55,9 +59,13 @@ function Todolist () {
           lp = l.offsetWidth, li = all_lists_arr.indexOf(l);
         main_cont.style.left = '-' + lp * li + 'px';
         this.set_active(l);
+        setTimeout(update_data, 200);
       }
     },
-    watch_title = function(e){e.which===13&&edit_toggle.call(this,e);(this.innerText.length==18&&e.which!=8)&&e.preventDefault()},
+    watch_title = function (e) {
+      if (this.innerText.length==18&&e.which!=8) e.preventDefault();
+      if (e.which === 13) {update_data(),edit_toggle.call(this,e)}
+    },
     adj_cont_width = function () {
       var main_cont = document.querySelector('.main-container'),
         first_child = addClass(main_cont.firstElementChild, 'active-list'),
@@ -98,12 +106,13 @@ function Todolist () {
             e = (299*b+587*c+114*d)/1e3;
           return e>=150?"#000":"#fff";
         };
-      if (e.which == 13) {
+      if (e.which == 13 || e.type == 'blur') {
         e.preventDefault();
         if (hex.length < 6 && hex.length != 3) this.value = hex = pad(hex);
         else if (hex.length > 6) { this.value = ''; return false }
         header.style.color = getContrast(hex);
         header.style.backgroundColor = '#' + hex;
+        setTimeout(update_data, 200);
       } else if ((!allowed || hex.length == 6) && e.which != 8) {
         e.preventDefault();
       }
@@ -148,13 +157,14 @@ function Todolist () {
       var new_item, new_item_html;
       if (e.which == 13) {
         e.preventDefault();
-        if (this.value.trim().length) {
-          new_item_html = item_tmpl.replace('{{title}}', this.value.trim());
+        if (this.innerText.trim().length) {
+          new_item_html = item_tmpl.replace('{{title}}', this.innerText.trim());
           new_item_html = new_item_html.replace('{{completed}}', '');
           new_item_html = new_item_html.replace('{{notes}}', '');
           new_item = makeElem(new_item_html);
           get('list', this).querySelector('.list').insertBefore(new_item, this.parentNode);
-          this.value = '';
+          this.innerText = '';
+          update_data();
         }
       }
     },
@@ -183,33 +193,61 @@ function Todolist () {
         new_list.offsetWidth // force repaint
         new_list.style.opacity = '';
         add_list_el.style.left = '';
-        setTimeout(function(){new_list.style.transition=''},400);
+        setTimeout(function () {
+          new_list.style.transition = '';
+          update_data();
+        }, 400);
         addListeners(null, new_list);
         adj_cont_width();
       }, 200)
       return r?new_list:void 0;
     },
-    del = function (p) {
-      var el = get(p, this), t;
-      if (p == 'list') {
-        addClass(el.nextElementSibling, 'active-list');
-        el.style.transition = 'opacity 200ms, top 200ms, width 200ms 200ms';
-        el.style.top = '-500px';
-        el.style.width = '0px';
-        el.style.opacity = 0;
-        t = 400;
-      } else {
-        el.style.height = el.offsetHeight + 'px';
-        el.style.minHeight = '';
-        el.offsetHeight // force repaint
-        el.style.transition = 'height 200ms';
-        el.style.height = '0px';
-        t = 200;
-      }
+    delete_list = function () {
+      var el = get('list', this),
+        alert = makeElem([
+          '<li class="alert">',
+            '<h2>Delete this list?</h2>',
+            '<a href="#" class="alert-yes"></a>',
+            '<a href="#" class="alert-no"></a>',
+          '</li>'
+        ].join('')),
+        confirm = function (e) {
+          e.preventDefault();
+          addClass(el.nextElementSibling, 'active-list');
+          el.style.transition = 'opacity 200ms, top 200ms, width 200ms 200ms';
+          el.style.top = '-500px';
+          el.style.width = '0px';
+          el.style.opacity = 0;
+          setTimeout(function () {
+            el.parentNode.removeChild(el)
+            adj_cont_width();
+            update_data();
+          }, 400);
+        },
+        cancel = function (e) {
+          e.preventDefault();
+          alert.style.height = '0px';
+          setTimeout(function () {
+            el.querySelector('.list').removeChild(alert);
+          }, 200);
+        };
+      el.querySelector('.list').appendChild(alert);
+      alert.querySelector('.alert-yes').addEventListener('click', confirm);
+      alert.querySelector('.alert-no').addEventListener('click', cancel);
+      alert.offsetHeight // force repaint
+      alert.style.height = '3.5em';
+    }
+    delete_item = function () {
+      var el = get('item', this);
+      el.style.height = el.offsetHeight + 'px';
+      el.style.minHeight = '';
+      el.offsetHeight // force repaint
+      el.style.transition = 'height 200ms';
+      el.style.height = '0px';
       setTimeout(function(){
         el.parentNode.removeChild(el)
-        p=='list'&&adj_cont_width();
-      },t);
+        update_data();
+      }, 200);
     },
     arrange = function (str) {
       // Managed to combine FOUR functions here
@@ -226,45 +264,71 @@ function Todolist () {
       el.style[anim] = (p?'-':'') + x_el_size + 'px';
       x_el.style[anim] = (p?'':'-') + el_size + 'px';
       el.style.zIndex = 1000;
-      l&&carousel.slide_to(x_el);
       setTimeout(function () {
         el.parentNode.insertBefore(p?el:x_el, p?x_el:el);
-        l&&carousel.set_active(el);
+        l&&carousel.slide_to(el);
         x_el.style.transition = '';
         el.style.transition = '';
         x_el.style[anim] = '';
         el.style[anim] = '';
         el.style.zIndex = '';
+        update_data();
       }, 200)
     },
     deligatedEvents = function (e) {
       var t = e.target,
+        check_toggle = function(){toggleClass(e.target,'checked'),update_data()},
         callEvent = function(a,b){e.preventDefault(),a.call(e.target,b)};
       if (!hasClass(get('list', t), 'active-list')) {
         carousel.slide_to(get('list', t));
         return false;
       }
-      if (hasClass(t,'checkbox')) {e.preventDefault(),toggleClass(e.target,'checked')}
+      if (hasClass(t,'checkbox')) callEvent(check_toggle);
       if (hasClass(t,'item-title')) callEvent(descr_toggle);
       if (hasClass(t,'edit-list')) callEvent(edit_toggle);
-      if (hasClass(t,'delete-item')) callEvent(del, 'item');
-      if (hasClass(t,'delete-list')) callEvent(del, 'list');
+      if (hasClass(t,'delete-item')) callEvent(delete_item);
+      if (hasClass(t,'delete-list')) callEvent(delete_list);
       if (hasClass(t,'move-item-up')) callEvent(arrange,'item prev');
       if (hasClass(t,'move-item-down')) callEvent(arrange,'item next');
       if (hasClass(t,'move-list-left')) callEvent(arrange,'list prev');
       if (hasClass(t,'move-list-right')) callEvent(arrange,'list next');
       if (hasClass(t,'add-item')) t.parentNode.querySelector('textarea').focus();
     },
-    request_json = function (c) {
-      var a,x=new XMLHttpRequest,f=function(){4==x.readyState&&c(JSON.parse(x.responseText))};
-      x.open("GET","todo.json",true),x.onreadystatechange=f,x.send(null)
+    request_data = function (c) {
+      var data = localStorage.getItem("TodoData");
+      data&&c(JSON.parse(data));
+    },
+    update_data = function () {
+      var lists = [];
+      forEach(document.querySelectorAll('.list'), function (i, lis) {
+        var list = {
+          "title": lis.querySelector('.list-header h1').innerText,
+          "settings": {
+            "color": lis.querySelector('.list-color').value
+          },
+          "items": []
+        };
+        forEach(lis.querySelectorAll('.list-item'), function (i, li) {
+          list.items.push({
+            "title": li.querySelector('h2').innerText,
+            "completed": hasClass(li.querySelector('.checkbox'), 'checked'),
+            "notes": li.querySelector('.descr p').innerText
+          });
+        });
+        lists.push(list);
+      });
+      localStorage.setItem("TodoData", JSON.stringify(lists));
     },
     addListeners = function (i, list) {
       list.querySelector('.list-container').style.padding = '0 ' + Math.ceil(scrollbar_size / 2) + 'px';
-      list.querySelector('.list-input textarea').addEventListener('keydown', add_item);
+      list.querySelector('.list-input-textarea').addEventListener('keydown', add_item);
       list.querySelector('.list-header h1').addEventListener('keydown', watch_title);
       list.querySelector('.list-color').addEventListener('keypress', change_color);
+      list.querySelector('.list-color').addEventListener('blur', change_color);
       list.addEventListener('click', deligatedEvents);
+      forEach(list.querySelectorAll('.descr p'), function (i, descr) {
+        descr.addEventListener('blur', update_data);
+      });
     },
     add_list = function () {
       var new_list_obj = {"title":"","settings":{"color":"0CF"},"items":[]},
@@ -272,7 +336,10 @@ function Todolist () {
         new_title = new_list.querySelector('.list-header h1');
       edit_toggle.call(new_list);
       carousel.slide_to(new_list);
-      setTimeout(function(){new_title.focus()},200);
+      setTimeout(function(){
+        new_title.focus();
+        update_data();
+      },200);
     };
 
   self.init = function () {
@@ -280,7 +347,9 @@ function Todolist () {
       e.preventDefault();hasClass(this,'active-list')?add_list():carousel.slide_to(this);
     });
     window.addEventListener('resize',adj_cont_width);
-    request_json(function(a){forEach(a,create_list)});
+    request_data(function(a){forEach(a,create_list)});
+    carousel.set_active(document.querySelector('.main-container').firstElementChild);
+    adj_cont_width();
     return self;
   };
 };
